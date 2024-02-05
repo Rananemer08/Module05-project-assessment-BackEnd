@@ -11,7 +11,7 @@ import { authenticateToken } from "../middlewares/auth.js";
 const router = express.Router();
 
 // Create
-router.post("/products",authenticateToken , upload.single("image"), createProduct);
+router.post("/products" , upload.single("image"), createProduct);
 
 // Get all
 router.get("/products", getAllProducts);

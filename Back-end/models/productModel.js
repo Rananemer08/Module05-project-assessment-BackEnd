@@ -42,26 +42,26 @@ const productSchema = new mongoose.Schema(
       //description text for the product
       type: String,
     },
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-        required: true,
-      },
+    // userId: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Product",
+    //     required: true,
+    //   },
    
   },
   {
     timestamps: true,
   }
 );
-productSchema.pre("find", function (next) {
-  this.populate(["userId"]);
-  next();
-});
+// productSchema.pre("find", function (next) {
+//   this.populate(["userId"]);
+//   next();
+// });
 
-productSchema.pre("findOne", function (next) {
-  this.populate(["usertId"]);
-  next();
-});
+// productSchema.pre("findOne", function (next) {
+//   this.populate(["usertId"]);
+//   next();
+// });
 
 const Product = mongoose.model("Product", productSchema);
 

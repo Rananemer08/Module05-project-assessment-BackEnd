@@ -25,7 +25,7 @@ const loginAdmin = async (req, res) => {
       });
     }
 
-    const admin = await Admin.findOne({ username });
+    const admin = await User.findOne({ username });
 
     if (!admin) {
       return res.status(401).json({
@@ -48,7 +48,7 @@ const loginAdmin = async (req, res) => {
       {
         id: admin.id,
         username: admin.username,
-        admin: admin,
+        userType: admin,
       },
       process.env.JWT_SECRET,
       {
@@ -70,9 +70,74 @@ const loginAdmin = async (req, res) => {
   }
 };
 
+// const createAdmin = async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
+    
+//     // Check empty fields
+//     if (!username || !password) {
+//       return res.status(400).json({
+//         success: false,
+//         status: 400,
+//         message: "Please provide both username and password",
+//       });
+//     }
+//     // Check password strength
+//     if (!validator.isStrongPassword(password)) {
+//       return res.status(400).json({
+//         success: false,
+//         status: 400,
+//         message: "Password is not strong enough",
+//       });
+//     }
+//     // Hash the password
+//     const hashedPassword = await hashPassword(password);
+//     const newAdmin = new Admin({ username, email,password: hashedPassword ,phoneNumber,address});
+//     console.log("zeinab ")
+
+//     const savedAdmin = await newAdmin.save();
+
+//     const token = jwt.sign(
+//       {
+//         id: savedAdmin.id,
+//         username: savedAdmin.username,
+//         userType: savedAdmin,
+//       },
+//       process.env.JWT_SECRET,
+//       {
+//         expiresIn: process.env.JWT_EXPIRATION,
+//       }
+//     );
+//     console.log("token ",token)
+//     res.status(201).json({
+//       success: true,
+//       message: "Admin created successfully",
+//       data: savedAdmin,
+//       accessToken: token,
+//       userType: "admin", // Adding userType to the response for admin
+//     });
+//   } catch (error) {
+//     // if (error.code === 11000) {
+//       res.status(500).json({
+//         success: false,
+//         message: "Username already exists",
+//         status: 500,
+//         data: null,
+//       });
+//     // } else {
+//     //   res.status(500).json({
+//     //     success: false,
+//     //     message: "kk" + error.message || "Failed to create a new admin",
+//     //     status: 500,
+//     //     data: null,
+//     //   });
+//     // }
+//   }
+// };
 const createAdmin = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, email, password, phoneNumber, address } = req.body;
+    console.log("Error creating admin:", error);
     // Check empty fields
     if (!username || !password) {
       return res.status(400).json({
@@ -89,10 +154,17 @@ const createAdmin = async (req, res) => {
         message: "Password is not strong enough",
       });
     }
-
     // Hash the password
     const hashedPassword = await hashPassword(password);
-    const newAdmin = new Admin({ username, password: hashedPassword });
+
+    const newAdmin = new User({
+      username,
+      email,
+      password: hashedPassword,
+      phoneNumber,
+      address,
+      userType: "admin",
+    });
 
     const savedAdmin = await newAdmin.save();
 
@@ -100,32 +172,33 @@ const createAdmin = async (req, res) => {
       {
         id: savedAdmin.id,
         username: savedAdmin.username,
-        admin: savedAdmin,
+        userType: savedAdmin.userType,
       },
       process.env.JWT_SECRET,
       {
         expiresIn: process.env.JWT_EXPIRATION,
       }
     );
+
     res.status(201).json({
       success: true,
       message: "Admin created successfully",
       data: savedAdmin,
       accessToken: token,
-      userType: "admin", // Adding userType to the response for admin
+      userType: "admin",
     });
   } catch (error) {
     if (error.code === 11000) {
       res.status(500).json({
         success: false,
-        message: "Username already exists",
+        message: "Username or email already exists",
         status: 500,
         data: null,
       });
     } else {
       res.status(500).json({
         success: false,
-        message: error.message || "Failed to create a new admin",
+        message: "Failed to create a new admin",
         status: 500,
         data: null,
       });
@@ -133,12 +206,14 @@ const createAdmin = async (req, res) => {
   }
 };
 
+export default createAdmin;
+
 const createUser = async (req, res) => {
   try {
-    const { fullName, email, password, phoneNumber, address } = req.body;
+    const { username, email, password, phoneNumber, address } = req.body;
 
     // Validate required fields
-    if (!fullName || !email || !password || !phoneNumber || !address) {
+    if (!username || !email || !password || !phoneNumber || !address) {
       return res.status(400).json({
         success: false,
         status: 400,
@@ -160,7 +235,7 @@ const createUser = async (req, res) => {
     const hashedPassword = await hashPassword(password);
 
     const newUser = new User({
-      fullName,
+      username,
       email,
       password: hashedPassword,
       phoneNumber,

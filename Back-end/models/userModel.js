@@ -2,14 +2,13 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    fullName: {
+    username: {
       type: String,
       required: true,
       trim: true,
     },
     email: {
       type: String,
-      required: true,
       unique: [true, "Email already exists"],
       lowercase: true,
       validate: {
@@ -27,7 +26,6 @@ const userSchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: String,
-      required: true,
       maxlength: 15,
       validate: {
         validator: (value) => {
@@ -46,7 +44,7 @@ const userSchema = new mongoose.Schema(
         type: String,
         required: true,
       },
-      bldg: {
+      blog: {
         type: String,
         required: true,
       },
@@ -56,7 +54,7 @@ const userSchema = new mongoose.Schema(
     },
     userType: {
         type: String,
-        enum: ['Creator', 'Viewer'],
+        enum: ['admin', 'Viewer'],
         required: true,
       },
   },

@@ -18,11 +18,11 @@ const createProduct = async (req, res) => {
       fabric,
       size,
       quantity,
-      userId,
+      // userId,
     } = req.body;
     const imagePath = req.file ? req.file.path : '';
 
-    if (!productName || !price || !color || !fabric || !size || !userId) {
+    if (!productName || !price || !color || !fabric || !size ) {
       return res.status(400).json({
         success: false,
         status: 400,
@@ -38,12 +38,12 @@ const createProduct = async (req, res) => {
       fabric,
       size,
       quantity,
-      userId,
+      // userId,
     });
 
     const savedProduct = await newProduct.save();
     const populatedProduct = await Product.findById(savedProduct._id)
-      .populate("userryId");
+      // .populate("userryId");
 
     res.status(201).json({
       success: true,
@@ -67,9 +67,9 @@ const createProduct = async (req, res) => {
 const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find()
-      .populate('userId')
-      .sort({ createdAt: -1 })
-      .select("-__v"); // Exclude versioning field
+      // .populate('userId')
+      // .sort({ createdAt: -1 })
+      // .select("-__v"); // Exclude versioning field
 
     res.status(200).json({
       success: true,
@@ -97,8 +97,8 @@ const getProductById = async (req, res) => {
     }
 
     const product = await Product.findById(id)
-    .populate('userId')
-    .select("-__v");
+    // .populate('userId')
+    // .select("-__v");
 
     if (!product) {
       return res.status(404).json({
@@ -137,7 +137,7 @@ const updateProduct = async (req, res) => {
       fabric,
       size,
       quantity,
-      userId,
+      // userId,
     } = req.body;
     const imagePath = req.file ? req.file.path : '';
 
@@ -169,12 +169,12 @@ const updateProduct = async (req, res) => {
           fabric,
           size,
           quantity,
-          userId,
+          // userId,
         },
       },
       { new: true }
     )
-      .populate('userId'); // Populate the updated category
+      // .populate('userId'); // Populate the updated category
 
     if (!updatedProduct) {
       return res.status(404).json({
